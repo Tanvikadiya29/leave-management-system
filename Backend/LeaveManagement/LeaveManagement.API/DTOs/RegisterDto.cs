@@ -10,4 +10,12 @@
         public string? Designation { get; set; }
         public string? DateOfJoining { get; set; }
     }
+
+    public class UpdateEmployeeDto
+    {
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string? Department { get; set; }
+        public string? Designation { get; set; }
+    }
 }

@@ -82,4 +82,23 @@ public class EmployeesController(EmployeeService employeeService) : ControllerBa
             return StatusCode(500, new { message = "Could not delete employee.", error = ex.Message });
         }
     }
+
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateEmployeeDto dto)
+    {
+        try
+        {
+            var (success, message) = await _employeeService.UpdateAsync(id, dto);
+
+            if (!success)
+                return NotFound(new { message });
+
+            return Ok(new { message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Could not update employee.", error = ex.Message });
+        }
+    }
 }

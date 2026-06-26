@@ -28,8 +28,8 @@ public class LeaveRequestServiceTests
             PasswordHash = "hash",
             RoleId = 2,
             IsActive = true,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
         });
 
         db.SaveChanges();

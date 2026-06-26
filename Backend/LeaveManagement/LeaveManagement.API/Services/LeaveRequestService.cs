@@ -79,8 +79,8 @@ public class LeaveRequestService(LeaveManagementDbContext db)
             ToDate = toDate,
             Reason = dto.Reason,
             Status = "Pending",
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
         };
 
         _db.LeaveRequests.Add(leave);
@@ -103,9 +103,9 @@ public class LeaveRequestService(LeaveManagementDbContext db)
 
         leave.Status = dto.Status;
         leave.ReviewedBy = adminId;
-        leave.ReviewedAt = DateTime.UtcNow;
+        leave.ReviewedAt = DateTime.Now;
         leave.Remarks = dto.Remarks;
-        leave.UpdatedAt = DateTime.UtcNow;
+        leave.UpdatedAt = DateTime.Now;
 
         await _db.SaveChangesAsync();
 

@@ -13,6 +13,7 @@ public class EmployeeService(LeaveManagementDbContext db)
     {
         var users = await _db.Users
             .Where(u => u.RoleId == 2 && u.IsActive == true)
+            .OrderByDescending(u => u.CreatedAt)
             .ToListAsync();
 
         var result = new List<EmployeeDto>();
@@ -57,6 +58,15 @@ public class EmployeeService(LeaveManagementDbContext db)
         if (emailTaken)
             return (false, "This email is already registered.");
 
+        if (string.IsNullOrWhiteSpace(dto.Password) || dto.Password.Length < 6)
+            return (false, "Password must be at least 6 characters.");
+
+        bool hasUpper = dto.Password.Any(char.IsUpper);
+        bool hasDigit = dto.Password.Any(char.IsDigit);
+
+        if (!hasUpper || !hasDigit)
+            return (false, "Password must have at least one uppercase letter and one number.");
+
         var newEmployee = new User
         {
             FirstName = dto.FirstName,
@@ -67,8 +77,8 @@ public class EmployeeService(LeaveManagementDbContext db)
             Department = dto.Department,
             Designation = dto.Designation,
             IsActive = true,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
         };
 
         if (!string.IsNullOrEmpty(dto.DateOfJoining))
@@ -88,10 +98,26 @@ public class EmployeeService(LeaveManagementDbContext db)
             return (false, "Employee not found.");
 
         user.IsActive = false;
-        user.UpdatedAt = DateTime.UtcNow;
+        user.UpdatedAt = DateTime.Now;
 
         await _db.SaveChangesAsync();
 
         return (true, "Employee removed.");
+    }
+
+    public async Task<(bool Success, string Message)> UpdateAsync(int id, UpdateEmployeeDto dto)
+    {
+        var user = await _db.Users.FindAsync(id);
+        if (user == null || user.IsActive == false)
+            return (false, "Employee not found.");
+
+        user.FirstName = dto.FirstName;
+        user.LastName = dto.LastName;
+        user.Department = dto.Department;
+        user.Designation = dto.Designation;
+        user.UpdatedAt = DateTime.Now;
+
+        await _db.SaveChangesAsync();
+        return (true, "Employee updated.");
     }
 }
